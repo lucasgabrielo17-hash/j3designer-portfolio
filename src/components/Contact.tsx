@@ -1,5 +1,4 @@
 import { useState, ChangeEvent, FormEvent, useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
 import './Contact.css'
 
 interface FormData {
@@ -31,26 +30,6 @@ const CONTACT_INFO: ContactInfo[] = [
     href: null
   }
 ]
-
-// Animation variants moved outside component
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2
-    }
-  }
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: 'easeOut' }
-  }
-}
 
 const INITIAL_FORM_DATA: FormData = {
   name: '',
@@ -89,13 +68,7 @@ const Contact = () => {
   return (
     <section className="contact">
       <div className="contact-container">
-        <motion.div 
-          className="contact-header"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="contact-header">
           <div className="header-content">
             <h2 className="section-title">
               <span className="title-main">Vamos Trabalhar Juntos?</span>
@@ -105,106 +78,79 @@ const Contact = () => {
               Tem um projeto em mente? Entre em contato e vamos transformar sua ideia em realidade
             </p>
           </div>
-        </motion.div>
+        </div>
 
         <div className="contact-content">
-          <motion.div 
-            className="contact-info"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-100px' }}
-          >
+          <div className="contact-info">
             <div className="info-cards">
               {CONTACT_INFO.map((info) => (
-                <motion.div 
+                <div 
                   key={info.label} 
                   className="info-card"
-                  variants={itemVariants}
-                  whileHover={{ x: 10 }}
-                  transition={{ duration: 0.2 }}
                 >
                   <div className="info-icon-wrapper">
-                    <motion.div 
-                      className="info-icon"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      transition={{ duration: 0.3 }}
-                    >
+                    <div className="info-icon">
                       {info.icon}
-                    </motion.div>
+                    </div>
                   </div>
                   <div className="info-content">
                     <span className="info-label">{info.label}</span>
                     {info.href ? (
-                      <motion.a 
+                      <a 
                         href={info.href} 
                         className="info-value"
-                        whileHover={{ x: 5 }}
-                        transition={{ duration: 0.2 }}
                       >
                         {info.value}
-                      </motion.a>
+                      </a>
                     ) : (
                       <span className="info-value">{info.value}</span>
                     )}
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
 
-            <motion.div className="social-links" variants={itemVariants}>
+            <div className="social-links">
               <h3 className="social-title">Siga-me</h3>
               <div className="social-buttons">
-                <motion.a
+                <a
                   href="https://www.facebook.com/juliojcodesigner/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="social-btn"
-                  whileHover={{ scale: 1.05, y: -3 }}
-                  whileTap={{ scale: 0.95 }}
                 >
                   <span className="social-icon">
                     <img src="/icons/facebook.png" alt="Facebook" className="social-icon-img" />
                   </span>
                   <span className="social-name">Facebook</span>
-                </motion.a>
-                <motion.a
+                </a>
+                <a
                   href="https://www.youtube.com/channel/UC3fuj2tV0exs8ileyx31J6g"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="social-btn"
-                  whileHover={{ scale: 1.05, y: -3 }}
-                  whileTap={{ scale: 0.95 }}
                 >
                   <span className="social-icon">
                     <img src="/icons/youtube.png" alt="YouTube" className="social-icon-img" />
                   </span>
                   <span className="social-name">YouTube</span>
-                </motion.a>
-                <motion.a
+                </a>
+                <a
                   href="https://www.instagram.com/j3designer_/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="social-btn"
-                  whileHover={{ scale: 1.05, y: -3 }}
-                  whileTap={{ scale: 0.95 }}
                 >
                   <span className="social-icon">
                     <img src="/icons/instagram.png" alt="Instagram" className="social-icon-img" />
                   </span>
                   <span className="social-name">Instagram</span>
-                </motion.a>
+                </a>
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
-          <motion.div 
-            className="contact-form-wrapper"
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
+          <div className="contact-form-wrapper">
             <div className="form-header">
               <h3 className="form-title">Envie uma mensagem</h3>
               <p className="form-description">Preencha o formulário abaixo e entrarei em contato em breve</p>
@@ -212,13 +158,7 @@ const Contact = () => {
             
             <form className="contact-form" onSubmit={handleSubmit}>
               <div className="form-row">
-                <motion.div 
-                  className="form-group"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 }}
-                >
+                <div className="form-group">
                   <label htmlFor="name">Nome *</label>
                   <input
                     type="text"
@@ -229,14 +169,8 @@ const Contact = () => {
                     placeholder="Seu nome completo"
                     required
                   />
-                </motion.div>
-                <motion.div 
-                  className="form-group"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.4 }}
-                >
+                </div>
+                <div className="form-group">
                   <label htmlFor="email">Email *</label>
                   <input
                     type="email"
@@ -247,16 +181,10 @@ const Contact = () => {
                     placeholder="seu@email.com"
                     required
                   />
-                </motion.div>
+                </div>
               </div>
               
-              <motion.div 
-                className="form-group"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5 }}
-              >
+              <div className="form-group">
                 <label htmlFor="subject">Assunto *</label>
                 <input
                   type="text"
@@ -267,15 +195,9 @@ const Contact = () => {
                   placeholder="Qual é o tema do projeto?"
                   required
                 />
-              </motion.div>
+              </div>
               
-              <motion.div 
-                className="form-group"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.6 }}
-              >
+              <div className="form-group">
                 <label htmlFor="message">Mensagem *</label>
                 <textarea
                   id="message"
@@ -286,18 +208,12 @@ const Contact = () => {
                   rows={6}
                   required
                 />
-              </motion.div>
+              </div>
 
-              <motion.button 
+              <button 
                 type="submit" 
                 className={`submit-btn ${isSubmitted ? 'success' : ''}`} 
                 disabled={isSubmitted}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.7 }}
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
               >
                 {isSubmitted ? (
                   <>
@@ -307,9 +223,9 @@ const Contact = () => {
                 ) : (
                   <span>Enviar Mensagem</span>
                 )}
-              </motion.button>
+              </button>
             </form>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

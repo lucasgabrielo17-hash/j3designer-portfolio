@@ -107,6 +107,11 @@
 .info-card:hover {
   border-color: rgba(168, 198, 108, 0.3);
   background: var(--bg-card-hover);
+  transform: translateX(10px);
+}
+
+.info-card:hover .info-icon {
+  transform: scale(1.1) rotate(5deg);
 }
 
 .info-icon {
@@ -121,6 +126,7 @@
   color: var(--primary-color);
   flex-shrink: 0;
   font-size: 1.5rem;
+  transition: transform 0.3s ease;
 }
 
 .info-icon-wrapper {
@@ -165,6 +171,16 @@
 .info-value a:hover,
 .info-content a:hover {
   color: var(--primary-light);
+  transform: translateX(5px);
+}
+
+a.info-value {
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+a.info-value:hover {
+  transform: translateX(5px);
 }
 
 /* Social Links Section */
@@ -226,7 +242,11 @@
 .social-btn:hover {
   border-color: rgba(168, 198, 108, 0.4);
   box-shadow: 0 4px 15px rgba(168, 198, 108, 0.2);
-  transform: translateY(-2px);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.social-btn:active {
+  transform: scale(0.95);
 }
 
 .social-btn:hover::before {
@@ -405,7 +425,7 @@
 
 .submit-btn:hover {
   box-shadow: 0 6px 25px rgba(168, 198, 108, 0.45);
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .submit-btn:hover::before {
@@ -413,7 +433,7 @@
 }
 
 .submit-btn:active {
-  transform: translateY(0);
+  transform: scale(0.98);
 }
 
 .submit-btn.success {

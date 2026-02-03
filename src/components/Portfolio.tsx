@@ -3,45 +3,18 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { portfolioCategories, PortfolioCategory, PortfolioItem } from '../data/portfolio'
 import './Portfolio.css'
 
-// Animation variants moved outside component - created once, not on every render
-const cardVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: (index: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: index * 0.2,
-      duration: 0.6,
-      ease: 'easeOut'
-    }
-  })
-}
-
+// Only keep modal variants - these are essential for open/close
 const modalVariants = {
-  hidden: { opacity: 0, scale: 0.8 },
+  hidden: { opacity: 0, scale: 0.9 },
   visible: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.3, ease: 'easeOut' }
+    transition: { duration: 0.2, ease: 'easeOut' }
   },
   exit: {
     opacity: 0,
-    scale: 0.8,
-    transition: { duration: 0.2, ease: 'easeIn' }
-  }
-}
-
-const imageVariants = {
-  hidden: { opacity: 0, scale: 1.1 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.5, ease: 'easeOut' }
-  },
-  exit: {
-    opacity: 0,
-    scale: 0.95,
-    transition: { duration: 0.2 }
+    scale: 0.9,
+    transition: { duration: 0.15, ease: 'easeIn' }
   }
 }
 
@@ -68,7 +41,7 @@ const Portfolio = () => {
     }
   }, [])
 
-  // Auto-rotate images every 5 seconds (only when not hovering)
+  // Auto-rotate images every 8 seconds (only when not hovering)
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex(prev => {
@@ -82,7 +55,7 @@ const Portfolio = () => {
         })
         return newIndices
       })
-    }, 5000)
+    }, 8000)
 
     return () => clearInterval(interval)
   }, [hoveredCard])
@@ -153,13 +126,7 @@ const Portfolio = () => {
   return (
     <section className="portfolio">
       <div className="portfolio-container">
-        <motion.div 
-          className="portfolio-header"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="portfolio-header">
           <div className="header-content">
             <h2 className="section-title">
               <span className="title-main">Portfólio</span>
@@ -169,20 +136,13 @@ const Portfolio = () => {
               Explore meus projetos em diferentes áreas do design e visualização 3D
             </p>
           </div>
-        </motion.div>
+        </div>
 
         <div className="portfolio-grid">
-          {portfolioCategories.map((category, index) => (
-            <motion.div
+          {portfolioCategories.map((category) => (
+            <div
               key={category.id}
               className="portfolio-card"
-              custom={index}
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-100px' }}
-              whileHover={{ y: -10 }}
-              transition={{ duration: 0.3 }}
               onMouseEnter={() => setHoveredCard(category.id)}
               onMouseLeave={() => {
                 setHoveredCard(null)
@@ -194,17 +154,17 @@ const Portfolio = () => {
                 onClick={() => openModal(category, getCurrentItem(category))}
                 style={{ cursor: 'pointer' }}
               >
-                <AnimatePresence initial={false}>
+                <AnimatePresence mode="popLayout">
                   <motion.img 
-                    key={`${category.id}-${hoveredImageIndex[category.id] ?? currentImageIndex[category.id] ?? 0}`}
+                    key={getCurrentImage(category)}
                     src={getCurrentImage(category)} 
                     alt={category.title}
                     className="card-image"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
+                    initial={{ opacity: 0, scale: 1.05 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ 
-                      duration: 0.5,
+                      duration: 0.6,
                       ease: [0.4, 0, 0.2, 1]
                     }}
                   />
@@ -221,18 +181,12 @@ const Portfolio = () => {
                 
                 <div className="card-items">
                   {category.items.slice(0, 5).map((item, itemIndex) => (
-                    <motion.div 
+                    <div 
                       key={item.id}
                       className="mini-item"
                       onClick={() => openModal(category, item)}
                       onMouseEnter={() => handleThumbnailHover(category.id, itemIndex)}
                       onMouseLeave={() => handleThumbnailHover(category.id, null)}
-                      whileHover={{ scale: 1.1, y: -5 }}
-                      whileTap={{ scale: 0.95 }}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.3 + itemIndex * 0.1 }}
                     >
                       {imageLoading.has(item.image) && (
                         <div className="mini-loader" />
@@ -248,15 +202,16 @@ const Portfolio = () => {
                       {item.isVideo && (
                         <div className="video-play-icon">▶</div>
                       )}
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
 
+      {/* Modal - keep AnimatePresence here, it's essential for smooth open/close */}
       <AnimatePresence>
         {selectedItem && selectedCategory && (
           <motion.div 
@@ -265,7 +220,7 @@ const Portfolio = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.2 }}
           >
             <motion.div 
               className="modal-content" 
@@ -275,78 +230,54 @@ const Portfolio = () => {
               animate="visible"
               exit="exit"
             >
-              <motion.button 
+              <button 
                 className="modal-close" 
                 onClick={closeModal}
-                whileHover={{ scale: 1.1, rotate: 90 }}
-                whileTap={{ scale: 0.9 }}
               >
                 ✕
-              </motion.button>
+              </button>
               
               <div className="modal-image-container">
-                <AnimatePresence mode="wait">
-                  {selectedItem.isVideo && selectedItem.videoUrl ? (
-                    <motion.div
-                      key={selectedItem.id}
-                      className="modal-video"
-                      variants={imageVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
-                    >
-                      <div className="video-wrapper">
-                        <iframe
-                          src={selectedItem.videoUrl}
-                          title={selectedItem.title}
-                          frameBorder="0"
-                          allowFullScreen
-                          className="video-iframe"
-                        />
-                      </div>
-                    </motion.div>
-                  ) : (
-                    <motion.img 
-                      key={selectedItem.id}
-                      src={selectedItem.image} 
-                      alt={selectedItem.title}
-                      className="modal-image"
-                      variants={imageVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
-                    />
-                  )}
-                </AnimatePresence>
+                {selectedItem.isVideo && selectedItem.videoUrl ? (
+                  <div className="modal-video">
+                    <div className="video-wrapper">
+                      <iframe
+                        src={selectedItem.videoUrl}
+                        title={selectedItem.title}
+                        frameBorder="0"
+                        allowFullScreen
+                        className="video-iframe"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <img 
+                    key={selectedItem.id}
+                    src={selectedItem.image} 
+                    alt={selectedItem.title}
+                    className="modal-image"
+                  />
+                )}
                 
                 {selectedCategory.items.length > 1 && (
                   <>
-                    <motion.button 
+                    <button 
                       className="modal-nav prev" 
                       onClick={() => navigateItem('prev')}
-                      whileHover={{ scale: 1.1, x: -5 }}
-                      whileTap={{ scale: 0.9 }}
                     >
                       ←
-                    </motion.button>
-                    <motion.button 
+                    </button>
+                    <button 
                       className="modal-nav next" 
                       onClick={() => navigateItem('next')}
-                      whileHover={{ scale: 1.1, x: 5 }}
-                      whileTap={{ scale: 0.9 }}
                     >
                       →
-                    </motion.button>
+                    </button>
                   </>
                 )}
               </div>
               
-              <motion.div 
-                className="modal-info"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2, duration: 0.4 }}
-              >
+              <div className="modal-info">
                 <span className="modal-category">{selectedCategory.title}</span>
                 <h3 className="modal-title">{selectedItem.title}</h3>
                 <p className="modal-description">
@@ -361,25 +292,20 @@ const Portfolio = () => {
                 </p>
                 
                 <div className="modal-thumbnails">
-                  {selectedCategory.items.map((item, index) => (
-                    <motion.button
+                  {selectedCategory.items.map((item) => (
+                    <button
                       key={item.id}
                       className={`thumbnail ${selectedItem.id === item.id ? 'active' : ''}`}
                       onClick={() => setSelectedItem(item)}
-                      whileHover={{ scale: 1.1, y: -5 }}
-                      whileTap={{ scale: 0.95 }}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.3 + index * 0.05 }}
                     >
                       <img src={item.image} alt={item.title} />
                       {item.isVideo && (
                         <div className="video-play-icon">▶</div>
                       )}
-                    </motion.button>
+                    </button>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             </motion.div>
           </motion.div>
         )}

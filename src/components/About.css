@@ -174,14 +174,18 @@
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   min-height: 100px;
 }
 
 .skill-badge:hover {
   border-color: rgba(168, 198, 108, 0.5);
   box-shadow: 0 8px 24px rgba(168, 198, 108, 0.15);
-  transform: translateY(-5px);
+  transform: translateY(-5px) scale(1.02);
+}
+
+.skill-badge:active {
+  transform: scale(0.98);
 }
 
 .skill-color-bar {
@@ -230,6 +234,11 @@
   z-index: 1;
   border: 3px solid var(--primary-color);
   border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.image-wrapper:hover .profile-image {
+  transform: scale(1.05);
 }
 
 .image-placeholder {
@@ -349,22 +358,14 @@
   height: 100%;
   object-fit: cover;
   opacity: 0.5;
-  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), filter 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.5s ease, filter 0.5s ease;
   display: block;
-  image-rendering: auto;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  filter: blur(0) saturate(0.8);
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  position: absolute;
-  top: 0;
-  left: 0;
+  filter: saturate(0.8);
 }
 
 .service-card:hover .service-bg-img {
   opacity: 1;
-  filter: blur(0) saturate(1.1);
+  filter: saturate(1.1);
 }
 
 .service-image-bg::after {

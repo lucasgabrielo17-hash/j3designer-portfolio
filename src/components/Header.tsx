@@ -9,15 +9,14 @@ interface HeaderProps {
 interface NavItem {
   id: string
   label: string
-  labelEn: string
 }
 
-// Static data moved outside component - created once, not on every render
+// Static data moved outside component
 const NAV_ITEMS: NavItem[] = [
-  { id: 'home', label: 'Início', labelEn: 'Home' },
-  { id: 'portfolio', label: 'Portfólio', labelEn: 'Portfolio' },
-  { id: 'about', label: 'Sobre', labelEn: 'About' },
-  { id: 'contact', label: 'Contato', labelEn: 'Contact' }
+  { id: 'home', label: 'Início' },
+  { id: 'portfolio', label: 'Portfólio' },
+  { id: 'about', label: 'Sobre' },
+  { id: 'contact', label: 'Contato' }
 ]
 
 const Header = ({ activeSection }: HeaderProps) => {
@@ -43,58 +42,43 @@ const Header = ({ activeSection }: HeaderProps) => {
 
   return (
     <>
-      <motion.header 
-        className={`header ${isScrolled ? 'scrolled' : ''}`}
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-      >
+      <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
         <div className="header-container">
-          <motion.div 
+          <div 
             className="logo" 
             onClick={() => scrollToSection('home')}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
           >
             <img src="/logo.jpg" alt="J3Designer Logo" className="logo-image" />
             <span className="logo-text">J3Designer</span>
-          </motion.div>
+          </div>
 
           <nav className="nav-desktop">
-            {NAV_ITEMS.map((item, index) => (
-              <motion.button
+            {NAV_ITEMS.map((item) => (
+              <button
                 key={item.id}
                 className={`nav-link ${activeSection === item.id ? 'active' : ''}`}
                 onClick={() => scrollToSection(item.id)}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + index * 0.1, duration: 0.4 }}
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.95 }}
               >
                 <span className="nav-label">{item.label}</span>
                 {activeSection === item.id && (
                   <motion.div 
                     className="nav-indicator"
                     layoutId="nav-indicator"
-                    transition={{ duration: 0.3, ease: 'easeOut' }}
+                    transition={{ duration: 0.2, ease: 'easeOut' }}
                   />
                 )}
-              </motion.button>
+              </button>
             ))}
           </nav>
 
-          <motion.button 
+          <button 
             className="mobile-menu-btn" 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            whileTap={{ scale: 0.9 }}
-            animate={{ rotate: isMobileMenuOpen ? 90 : 0 }}
-            transition={{ duration: 0.3 }}
           >
             {isMobileMenuOpen ? '✕' : '☰'}
-          </motion.button>
+          </button>
         </div>
-      </motion.header>
+      </header>
 
       <AnimatePresence>
         {isMobileMenuOpen && (
@@ -103,21 +87,16 @@ const Header = ({ activeSection }: HeaderProps) => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.2 }}
           >
-            {NAV_ITEMS.map((item, index) => (
-              <motion.button
+            {NAV_ITEMS.map((item) => (
+              <button
                 key={item.id}
                 className={`nav-mobile-link ${activeSection === item.id ? 'active' : ''}`}
                 onClick={() => scrollToSection(item.id)}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ delay: index * 0.05, duration: 0.3 }}
-                whileTap={{ scale: 0.95 }}
               >
                 {item.label}
-              </motion.button>
+              </button>
             ))}
           </motion.nav>
         )}

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import './About.css'
 
 interface Skill {
@@ -10,10 +9,10 @@ interface Skill {
 interface Service {
   title: string
   description: string
-  images: string[] // Changed to array for multiple images
+  images: string[]
 }
 
-// Static data moved outside component to prevent recreation on each render
+// Static data moved outside component
 const SKILLS: Skill[] = [
   { name: '3ds Max', color: '#00A88E' },
   { name: 'V-Ray', color: '#1E88E5' },
@@ -66,57 +65,10 @@ const SERVICES: Service[] = [
   }
 ]
 
-// Image transition interval in milliseconds (same as Portfolio: 5 seconds)
-const IMAGE_TRANSITION_INTERVAL = 5000
-
-// Animation variants moved outside component
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15
-    }
-  }
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: 'easeOut' }
-  }
-}
-
-const skillVariants = {
-  hidden: { opacity: 0, x: -30 },
-  visible: (index: number) => ({
-    opacity: 1,
-    x: 0,
-    transition: {
-      delay: index * 0.1,
-      duration: 0.5,
-      ease: 'easeOut'
-    }
-  })
-}
-
-const serviceVariants = {
-  hidden: { opacity: 0, scale: 0.9 },
-  visible: (index: number) => ({
-    opacity: 1,
-    scale: 1,
-    transition: {
-      delay: index * 0.15,
-      duration: 0.5,
-      ease: 'easeOut'
-    }
-  })
-}
+// Image transition interval
+const IMAGE_TRANSITION_INTERVAL = 8000
 
 const About = () => {
-  // State for tracking current image index for each service card
   const [currentImageIndices, setCurrentImageIndices] = useState<Record<number, number>>(() => {
     const initial: Record<number, number> = {}
     SERVICES.forEach((_, index) => { initial[index] = 0 })
@@ -124,13 +76,11 @@ const About = () => {
   })
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
 
-  // Auto-rotate images every 4 seconds (pause on hover)
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndices(prev => {
         const newIndices: Record<number, number> = { ...prev }
         SERVICES.forEach((service, index) => {
-          // Only rotate if not hovering on this card
           if (hoveredCard !== index) {
             const currentIdx = prev[index] || 0
             newIndices[index] = (currentIdx + 1) % service.images.length
@@ -146,13 +96,7 @@ const About = () => {
   return (
     <section className="about">
       <div className="about-container">
-        <motion.div 
-          className="about-header"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="about-header">
           <div className="header-content">
             <h2 className="section-title">
               <span className="title-main">Quem Sou</span>
@@ -162,17 +106,11 @@ const About = () => {
               Designer e visualizador 3D apaixonado por transformar conceitos em imagens impactantes
             </p>
           </div>
-        </motion.div>
+        </div>
 
         <div className="about-content">
-          <motion.div 
-            className="about-text"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-100px' }}
-          >
-            <motion.div className="about-intro" variants={itemVariants}>
+          <div className="about-text">
+            <div className="about-intro">
               <p className="intro-text">
                 Olá! Sou <strong>Júlio Oliveira</strong>, designer especializado em visualização 3D 
                 com mais de 30 anos de experiência no mercado. Minha missão é dar vida aos projetos 
@@ -182,22 +120,15 @@ const About = () => {
                 Trabalho com arquitetos, designers de interiores, construtoras e empresas de diversos 
                 segmentos, ajudando-os a apresentar seus projetos de forma profissional e envolvente.
               </p>
-            </motion.div>
+            </div>
 
-            <motion.div className="skills-section" variants={itemVariants}>
+            <div className="skills-section">
               <h3 className="skills-title">Habilidades & Ferramentas</h3>
               <div className="skills-grid">
-                {SKILLS.map((skill, index) => (
-                  <motion.div 
+                {SKILLS.map((skill) => (
+                  <div 
                     key={skill.name} 
                     className="skill-badge"
-                    custom={index}
-                    variants={skillVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    transition={{ duration: 0.2 }}
                   >
                     <div 
                       className="skill-color-bar" 
@@ -206,78 +137,49 @@ const About = () => {
                     <div className="skill-content">
                       <span className="skill-name">{skill.name}</span>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
-          <motion.div 
-            className="about-image"
-            initial={{ opacity: 0, scale: 0.9, x: 50 }}
-            whileInView={{ opacity: 1, scale: 1, x: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-          >
+          <div className="about-image">
             <div className="image-wrapper">
-              <motion.img 
+              <img 
                 src="/julio2.png" 
                 alt="Júlio Oliveira" 
                 className="profile-image"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
               />
               <div className="image-glow"></div>
             </div>
-          </motion.div>
+          </div>
         </div>
 
-        <motion.div 
-          className="services-section"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="services-section">
           <h3 className="services-title">Serviços</h3>
           <div className="services-grid">
             {SERVICES.map((service, index) => (
-              <motion.div 
+              <div 
                 key={service.title} 
                 className="service-card"
-                custom={index}
-                variants={serviceVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
                 onMouseEnter={() => setHoveredCard(index)}
                 onMouseLeave={() => setHoveredCard(null)}
               >
                 <div className="service-image-bg">
-                  <AnimatePresence initial={false}>
-                    <motion.img 
-                      key={`${service.title}-${currentImageIndices[index]}`}
-                      src={service.images[currentImageIndices[index] || 0]} 
-                      alt={service.title}
-                      className="service-bg-img"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ 
-                        duration: 0.5,
-                        ease: [0.4, 0, 0.2, 1]
-                      }}
-                    />
-                  </AnimatePresence>
+                  <img 
+                    src={service.images[currentImageIndices[index] || 0]} 
+                    alt={service.title}
+                    className="service-bg-img"
+                  />
                 </div>
                 <div className="service-content">
                   <h4 className="service-name">{service.title}</h4>
                   <p className="service-description">{service.description}</p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )
