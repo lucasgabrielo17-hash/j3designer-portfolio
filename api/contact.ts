@@ -1,8 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 interface ContactFormData {
   name: string
   email: string
@@ -46,10 +44,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(500).json({ error: 'Configuração de email não encontrada' })
     }
 
+    // Initialize Resend inside the handler to ensure env var is available
+    const resend = new Resend(process.env.RESEND_API_KEY)
+
     // Send email using Resend
+    // Note: With free tier, you can only send to the email you signed up with
+    // unless you verify a domain
     const { data, error } = await resend.emails.send({
       from: 'J3Designer Portfolio <onboarding@resend.dev>',
-      to: ['julio.jco@hotmail.com'],
+      to: [process.env.RESEND_TO_EMAIL || 'julio.jco@hotmail.com'],
       replyTo: email,
       subject: `[Portfolio] ${subject}`,
       html: `
@@ -79,13 +82,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
 
     if (error) {
-      console.error('Resend error:', error)
-      return res.status(500).json({ error: 'Falha ao enviar email. Tente novamente.' })
+      console.error('Resend error:', JSON.stringify(error, null, 2))
+      return res.status(500).json({ 
+        error: 'Falha ao enviar email. Tente novamente.',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      })
     }
 
     return res.status(200).json({ success: true, messageId: data?.id })
-  } catch (error) {
-    console.error('Server error:', error)
-    return res.status(500).json({ error: 'Erro interno do servidor' })
+  } catch (err) {
+    const error = err as Error
+    console.error('Server error:', error.message, error.stack)
+    return res.status(500).json({ 
+      error: 'Erro interno do servidor',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    })
   }
 }
