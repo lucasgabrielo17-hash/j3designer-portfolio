@@ -73,7 +73,9 @@ const Contact = () => {
         body: JSON.stringify(formData),
       })
 
-      const data = await response.json()
+      // Check if response has content before parsing JSON
+      const text = await response.text()
+      const data = text ? JSON.parse(text) : {}
 
       if (!response.ok) {
         throw new Error(data.error || 'Erro ao enviar mensagem')

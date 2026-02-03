@@ -11,6 +11,16 @@ interface ContactFormData {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+
+  // Handle preflight request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end()
+  }
+
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
@@ -21,13 +31,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Validate required fields
     if (!name || !email || !subject || !message) {
-      return res.status(400).json({ error: 'All fields are required' })
+      return res.status(400).json({ error: 'Todos os campos são obrigatórios' })
     }
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: 'Invalid email format' })
+      return res.status(400).json({ error: 'Formato de email inválido' })
+    }
+
+    // Check if API key is configured
+    if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY is not configured')
+      return res.status(500).json({ error: 'Configuração de email não encontrada' })
     }
 
     // Send email using Resend
@@ -64,12 +80,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (error) {
       console.error('Resend error:', error)
-      return res.status(500).json({ error: 'Failed to send email' })
+      return res.status(500).json({ error: 'Falha ao enviar email. Tente novamente.' })
     }
 
     return res.status(200).json({ success: true, messageId: data?.id })
   } catch (error) {
     console.error('Server error:', error)
-    return res.status(500).json({ error: 'Internal server error' })
+    return res.status(500).json({ error: 'Erro interno do servidor' })
   }
 }
