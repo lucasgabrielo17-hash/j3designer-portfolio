@@ -96,7 +96,7 @@ const About = () => {
   return (
     <section className="about">
       <div className="about-container">
-        <div className="about-header">
+        <div className="about-header scroll-reveal">
           <div className="header-content">
             <h2 className="section-title">
               <span className="title-main">Quem Sou</span>
@@ -109,7 +109,7 @@ const About = () => {
         </div>
 
         <div className="about-content">
-          <div className="about-text">
+          <div className="about-text scroll-reveal from-left delay-1">
             <div className="about-intro">
               <p className="intro-text">
                 Olá! Sou <strong>Júlio Oliveira</strong>, designer especializado em visualização 3D 
@@ -143,7 +143,7 @@ const About = () => {
             </div>
           </div>
 
-          <div className="about-image">
+          <div className="about-image scroll-reveal from-right delay-2">
             <div className="image-wrapper">
               <img 
                 src="/julio2.png" 
@@ -155,13 +155,13 @@ const About = () => {
           </div>
         </div>
 
-        <div className="services-section">
+        <div className="services-section scroll-reveal">
           <h3 className="services-title">Serviços</h3>
           <div className="services-grid">
             {SERVICES.map((service, index) => (
               <div 
                 key={service.title} 
-                className="service-card"
+                className={`service-card scroll-reveal scale-up delay-${Math.min(index + 1, 4)}`}
                 onMouseEnter={() => setHoveredCard(index)}
                 onMouseLeave={() => setHoveredCard(null)}
               >

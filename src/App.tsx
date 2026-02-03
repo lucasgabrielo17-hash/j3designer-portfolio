@@ -23,6 +23,9 @@ function App() {
   const [activeSection, setActiveSection] = useState<string>('home')
   const observerRef = useRef<IntersectionObserver | null>(null)
 
+  // Scroll reveal observer
+  const scrollRevealRef = useRef<IntersectionObserver | null>(null)
+
   useEffect(() => {
     // Use IntersectionObserver instead of scroll listener for better performance
     observerRef.current = new IntersectionObserver(
@@ -51,6 +54,39 @@ function App() {
     return () => {
       if (observerRef.current) {
         observerRef.current.disconnect()
+      }
+    }
+  }, [])
+
+  // Scroll reveal animation observer
+  useEffect(() => {
+    scrollRevealRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible')
+          }
+        })
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '-50px 0px'
+      }
+    )
+
+    // Small delay to ensure lazy-loaded components are rendered
+    const timer = setTimeout(() => {
+      document.querySelectorAll('.scroll-reveal').forEach((el) => {
+        if (scrollRevealRef.current) {
+          scrollRevealRef.current.observe(el)
+        }
+      })
+    }, 100)
+
+    return () => {
+      clearTimeout(timer)
+      if (scrollRevealRef.current) {
+        scrollRevealRef.current.disconnect()
       }
     }
   }, [])

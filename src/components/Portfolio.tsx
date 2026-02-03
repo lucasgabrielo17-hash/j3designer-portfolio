@@ -126,7 +126,7 @@ const Portfolio = () => {
   return (
     <section className="portfolio">
       <div className="portfolio-container">
-        <div className="portfolio-header">
+        <div className="portfolio-header scroll-reveal">
           <div className="header-content">
             <h2 className="section-title">
               <span className="title-main">Portfólio</span>
@@ -139,10 +139,10 @@ const Portfolio = () => {
         </div>
 
         <div className="portfolio-grid">
-          {portfolioCategories.map((category) => (
+          {portfolioCategories.map((category, index) => (
             <div
               key={category.id}
-              className="portfolio-card"
+              className={`portfolio-card scroll-reveal delay-${Math.min(index + 1, 4)}`}
               onMouseEnter={() => setHoveredCard(category.id)}
               onMouseLeave={() => {
                 setHoveredCard(null)

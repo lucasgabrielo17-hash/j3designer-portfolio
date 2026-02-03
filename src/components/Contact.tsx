@@ -68,7 +68,7 @@ const Contact = () => {
   return (
     <section className="contact">
       <div className="contact-container">
-        <div className="contact-header">
+        <div className="contact-header scroll-reveal">
           <div className="header-content">
             <h2 className="section-title">
               <span className="title-main">Vamos Trabalhar Juntos?</span>
@@ -81,12 +81,12 @@ const Contact = () => {
         </div>
 
         <div className="contact-content">
-          <div className="contact-info">
+          <div className="contact-info scroll-reveal from-left delay-1">
             <div className="info-cards">
-              {CONTACT_INFO.map((info) => (
+              {CONTACT_INFO.map((info, index) => (
                 <div 
                   key={info.label} 
-                  className="info-card"
+                  className={`info-card scroll-reveal delay-${index + 1}`}
                 >
                   <div className="info-icon-wrapper">
                     <div className="info-icon">
@@ -110,7 +110,7 @@ const Contact = () => {
               ))}
             </div>
 
-            <div className="social-links">
+            <div className="social-links scroll-reveal delay-3">
               <h3 className="social-title">Siga-me</h3>
               <div className="social-buttons">
                 <a
@@ -150,7 +150,7 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="contact-form-wrapper">
+          <div className="contact-form-wrapper scroll-reveal from-right delay-2">
             <div className="form-header">
               <h3 className="form-title">Envie uma mensagem</h3>
               <p className="form-description">Preencha o formulário abaixo e entrarei em contato em breve</p>
