@@ -70,21 +70,35 @@ function App() {
       },
       {
         threshold: 0.1,
-        rootMargin: '-50px 0px'
+        rootMargin: '0px 0px'
       }
     )
 
-    // Small delay to ensure lazy-loaded components are rendered
-    const timer = setTimeout(() => {
-      document.querySelectorAll('.scroll-reveal').forEach((el) => {
+    // Function to observe scroll-reveal elements
+    const observeElements = () => {
+      document.querySelectorAll('.scroll-reveal:not(.observed)').forEach((el) => {
         if (scrollRevealRef.current) {
+          el.classList.add('observed')
           scrollRevealRef.current.observe(el)
         }
       })
-    }, 100)
+    }
+
+    // Initial observation
+    observeElements()
+
+    // Use MutationObserver to watch for lazy-loaded components
+    const mutationObserver = new MutationObserver(() => {
+      observeElements()
+    })
+
+    mutationObserver.observe(document.body, {
+      childList: true,
+      subtree: true
+    })
 
     return () => {
-      clearTimeout(timer)
+      mutationObserver.disconnect()
       if (scrollRevealRef.current) {
         scrollRevealRef.current.disconnect()
       }

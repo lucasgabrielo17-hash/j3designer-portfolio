@@ -40,7 +40,9 @@ const INITIAL_FORM_DATA: FormData = {
 
 const Contact = () => {
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM_DATA)
-  const [isSubmitted, setIsSubmitted] = useState<boolean>(false)
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState<string>('')
   const timeoutRef = useRef<number | null>(null)
 
   // Cleanup timeout on unmount to prevent memory leak
@@ -56,13 +58,42 @@ const Contact = () => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsSubmitted(true)
-    timeoutRef.current = window.setTimeout(() => {
-      setIsSubmitted(false)
-      setFormData(INITIAL_FORM_DATA)
-    }, 3000)
+    setIsSubmitting(true)
+    setSubmitStatus('idle')
+    setErrorMessage('')
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro ao enviar mensagem')
+      }
+
+      setSubmitStatus('success')
+      timeoutRef.current = window.setTimeout(() => {
+        setSubmitStatus('idle')
+        setFormData(INITIAL_FORM_DATA)
+      }, 3000)
+    } catch (error) {
+      setSubmitStatus('error')
+      setErrorMessage(error instanceof Error ? error.message : 'Erro ao enviar mensagem')
+      timeoutRef.current = window.setTimeout(() => {
+        setSubmitStatus('idle')
+        setErrorMessage('')
+      }, 5000)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -210,12 +241,23 @@ const Contact = () => {
                 />
               </div>
 
+              {submitStatus === 'error' && (
+                <div className="form-error">
+                  {errorMessage}
+                </div>
+              )}
+
               <button 
                 type="submit" 
-                className={`submit-btn ${isSubmitted ? 'success' : ''}`} 
-                disabled={isSubmitted}
+                className={`submit-btn ${submitStatus === 'success' ? 'success' : ''} ${submitStatus === 'error' ? 'error' : ''}`} 
+                disabled={isSubmitting || submitStatus === 'success'}
               >
-                {isSubmitted ? (
+                {isSubmitting ? (
+                  <>
+                    <span className="btn-spinner"></span>
+                    <span>Enviando...</span>
+                  </>
+                ) : submitStatus === 'success' ? (
                   <>
                     <span className="btn-icon">✓</span>
                     <span>Mensagem Enviada!</span>
