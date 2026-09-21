@@ -61,6 +61,8 @@
 .nav-desktop {
   display: flex;
   gap: 2rem;
+  margin-left: auto;
+  margin-right: 2rem;
 }
 
 .nav-link {
@@ -113,6 +115,42 @@
   color: var(--text-primary);
   cursor: pointer;
   padding: 0.5rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.header-social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.header-social:hover {
+  border-color: var(--primary-color);
+  background: rgba(168, 198, 108, 0.12);
+  transform: translateY(-2px);
+}
+
+.header-social-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(75%) sepia(5%) saturate(300%) hue-rotate(40deg);
+  transition: filter 0.3s ease;
+}
+
+.header-social:hover .header-social-icon {
+  filter: brightness(0) saturate(100%) invert(78%) sepia(35%) saturate(500%) hue-rotate(40deg);
 }
 
 .nav-mobile {

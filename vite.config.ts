@@ -7,7 +7,8 @@ export default defineConfig({
     port: 3000,
     open: true,
     host: true,
-    strictPort: false
+    strictPort: false,
+    allowedHosts: ['remedy-mary-administered-generic.trycloudflare.com']
   },
   build: {
     outDir: 'dist',

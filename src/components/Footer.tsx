@@ -8,7 +8,6 @@ interface SocialLink {
 
 // Static data moved outside component
 const SOCIAL_LINKS: SocialLink[] = [
-  { icon: '/icons/facebook.png', url: 'https://www.facebook.com/juliojcodesigner/', label: 'Facebook' },
   { icon: '/icons/youtube.png', url: 'https://www.youtube.com/channel/UC3fuj2tV0exs8ileyx31J6g', label: 'YouTube' },
   { icon: '/icons/instagram.png', url: 'https://www.instagram.com/j3designer_/', label: 'Instagram' }
 ]
@@ -23,16 +22,12 @@ const NAV_SECTIONS = [
 const Footer = () => {
   const currentYear = new Date().getFullYear()
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
   return (
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-top">
           <div className="footer-brand">
-            <img src="/logo.jpg" alt="J3Designer Logo" className="footer-logo" />
+            <img src="/logo.png" alt="J3Designer Logo" className="footer-logo" />
             <span className="footer-brand-name">J3Designer</span>
           </div>
 
@@ -73,14 +68,6 @@ const Footer = () => {
         </div>
       </div>
 
-      <button 
-        className="scroll-top-btn" 
-        onClick={scrollToTop}
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M18 15l-6-6-6 6" />
-        </svg>
-      </button>
     </footer>
   )
 }

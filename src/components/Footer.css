@@ -1,8 +1,9 @@
 .footer {
   padding: 3rem 2rem 2rem;
-  background: var(--bg-dark);
-  border-top: 1px solid var(--border-color);
   position: relative;
+  z-index: 2;
+  background: var(--bg-darker);
+  border-top: 1px solid var(--border-color);
 }
 
 .footer-container {
@@ -144,50 +145,6 @@
   font-weight: 400;
 }
 
-.heart-icon {
-  color: #ef4444;
-  animation: heartbeat 1.5s infinite ease-in-out;
-}
-
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-}
-
-.scroll-top-btn {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  width: 45px;
-  height: 45px;
-  background: var(--primary-color);
-  border: none;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--bg-dark);
-  cursor: pointer;
-  box-shadow: 0 4px 20px rgba(168, 198, 108, 0.3);
-  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
-  z-index: 100;
-}
-
-.scroll-top-btn svg {
-  width: 20px;
-  height: 20px;
-}
-
-.scroll-top-btn:hover {
-  background: var(--primary-light);
-  box-shadow: 0 6px 30px rgba(168, 198, 108, 0.4);
-  transform: translateY(-5px);
-}
-
-.scroll-top-btn:active {
-  transform: scale(0.95);
-}
-
 @media (max-width: 768px) {
   .footer {
     padding: 3rem 1.5rem 1.5rem;
@@ -211,15 +168,4 @@
     gap: 0.75rem;
   }
 
-  .scroll-top-btn {
-    width: 40px;
-    height: 40px;
-    bottom: 1.5rem;
-    right: 1.5rem;
-  }
-
-  .scroll-top-btn svg {
-    width: 18px;
-    height: 18px;
-  }
 }

@@ -52,9 +52,79 @@ body {
 }
 
 .app {
+  position: relative;
+  isolation: isolate;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+.app::before {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 8% 35%, rgba(168, 198, 108, 0.12), transparent 28%),
+    radial-gradient(circle at 94% 8%, rgba(168, 198, 108, 0.09), transparent 24%),
+    radial-gradient(circle at 72% 92%, rgba(138, 168, 77, 0.07), transparent 26%);
+  content: '';
+  pointer-events: none;
+}
+
+.site-watermarks {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.site-watermark {
+  position: absolute;
+  opacity: 0.03;
+  object-fit: contain;
+}
+
+.app > header,
+.app > main,
+.app > footer {
+  position: relative;
+  z-index: 1;
+}
+
+.app > header {
+  position: fixed;
+  z-index: 1000;
+}
+
+.app > .scroll-top {
+  position: fixed;
+  z-index: 900;
+}
+
+#portfolio,
+#about,
+#contact {
+  scroll-margin-top: 70px;
+}
+
+main > section {
+  position: relative;
+}
+
+main > section > * {
+  position: relative;
+  z-index: 1;
+}
+
+#home,
+#about {
+  background: transparent;
+}
+
+#portfolio,
+#contact {
+  background: rgba(20, 20, 20, 0.65);
 }
 
 /* Lazy loading section fallback */

@@ -1,85 +1,103 @@
+import { useEffect, useState } from 'react'
+import { portfolioCategories } from '../data/portfolio'
 import './Hero.css'
 
-interface SocialLink {
-  icon: string
-  url: string
-  label: string
+interface CollageImage {
+  src: string
+  alt: string
 }
 
-// Static data moved outside component
-const SOCIAL_LINKS: SocialLink[] = [
-  { icon: '/icons/facebook.png', url: 'https://www.facebook.com/juliojcodesigner/', label: 'Facebook' },
-  { icon: '/icons/youtube.png', url: 'https://www.youtube.com/channel/UC3fuj2tV0exs8ileyx31J6g', label: 'YouTube' },
-  { icon: '/icons/instagram.png', url: 'https://www.instagram.com/j3designer_/', label: 'Instagram' }
+// Rounded-triangle clip shapes (rotated to match the reference layout)
+const COLLAGE_IMAGES: CollageImage[] = [
+  {
+    src: '/Triangulo%2001.png',
+    alt: 'Ilustração digital',
+  },
+  {
+    src: '/Triangulo%2002.png',
+    alt: 'Modelagem 3D de produto',
+  },
+  {
+    src: '/Triangulo%2003.png',
+    alt: 'Visualização de interiores',
+  }
 ]
 
+const FEATURED_IMAGES = portfolioCategories.flatMap((category) => [
+  category.coverImage,
+  ...category.items.map((item) => item.image)
+]).filter((image, index, images) => images.indexOf(image) === index).slice(0, 12)
+
+const TriangleFrame = ({ src, alt }: { src: string; alt: string }) => (
+  <img className="tri-image" src={src} alt={alt} />
+)
+
 const Hero = () => {
+  const [featuredIndex, setFeaturedIndex] = useState(0)
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setFeaturedIndex((currentIndex) => (currentIndex + 1) % FEATURED_IMAGES.length)
+    }, 5000)
+
+    return () => window.clearInterval(interval)
+  }, [])
+
   const scrollToPortfolio = () => {
-    const element = document.getElementById('portfolio')
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
+    document.getElementById('portfolio')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
     <section className="hero">
-      {/* Background orbs use pure CSS animations */}
-      <div className="hero-background">
-        <div className="gradient-orb orb-1" />
-        <div className="gradient-orb orb-2" />
-        <div className="gradient-orb orb-3" />
-      </div>
+      <div className="hero-inner animate-in">
+        <div className="hero-showcase">
+          <div className="hero-collage">
+            {COLLAGE_IMAGES.map((image, index) => (
+              <div key={image.alt} className={`collage-frame frame-${index + 1}`}>
+                <TriangleFrame
+                  src={image.src}
+                  alt={image.alt}
+                />
+              </div>
+            ))}
+          </div>
 
-      <div className="hero-content animate-in">
-        <div className="hero-badge">
-          <span className="badge-text">Portfólio 2021-2026</span>
+          <div className="hero-featured">
+            <img
+              key={FEATURED_IMAGES[featuredIndex]}
+              src={FEATURED_IMAGES[featuredIndex]}
+              alt="Projeto do portfólio J3Designer"
+              className="hero-featured-image"
+              loading="eager"
+            />
+          </div>
         </div>
 
-        <h1 className="hero-title">
-          <span className="title-line">Júlio Oliveira</span>
-          <span className="title-line gradient">J3Designer</span>
-        </h1>
+        <div className="hero-info">
+          <div className="hero-info-content">
+            <div className="hero-identity">
+              <h1 className="hero-name">Júlio Oliveira</h1>
+              <p className="hero-role">
+                <img src="/logo.png" alt="" className="role-logo" />
+                <span className="role-title">ArchViz</span>
+                <span className="role-desc">Tratamento de Imagens e Vídeos</span>
+              </p>
+            </div>
 
-        <p className="hero-subtitle">
-          Especialista em visualizações arquitetônicas, interiores, produtos 3D e ilustrações.
-          <br />
-          <span className="subtitle-en">Transformando ideias em realidade visual.</span>
-        </p>
-
-        <div className="hero-cta">
-          <button 
-            className="cta-primary" 
-            onClick={scrollToPortfolio}
-          >
-            Ver Portfólio
-          </button>
-          <button 
-            className="cta-secondary" 
-            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-          >
-            Entre em Contato
-          </button>
-        </div>
-
-        <div className="hero-socials">
-          {SOCIAL_LINKS.map((social) => (
-            <a
-              key={social.label}
-              href={social.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="social-link"
-              aria-label={social.label}
-            >
-              <img src={social.icon} alt={social.label} className="social-icon-img" />
-            </a>
-          ))}
+            <button className="hero-cta" onClick={scrollToPortfolio}>
+              Ver Portfólio
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="hero-scroll">
+      <button
+        className="hero-scroll"
+        onClick={scrollToPortfolio}
+        aria-label="Rolar para o portfólio"
+      >
         <span className="scroll-icon">↓</span>
-      </div>
+      </button>
     </section>
   )
 }

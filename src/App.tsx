@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
 import './App.css'
 
 // Lazy load below-fold components for better initial load performance
@@ -11,6 +12,17 @@ const Contact = lazy(() => import('./components/Contact'))
 
 // Static data moved outside component
 const SECTIONS = ['home', 'portfolio', 'about', 'contact'] as const
+
+const SITE_WATERMARKS = [
+  { top: '-8%', left: '2%', size: 260, rotate: -14 },
+  { top: '6%', left: '38%', size: 420, rotate: 12 },
+  { top: '28%', left: '78%', size: 300, rotate: -8 },
+  { top: '44%', left: '-7%', size: 460, rotate: 20 },
+  { top: '58%', left: '26%', size: 220, rotate: -18 },
+  { top: '70%', left: '68%', size: 500, rotate: 10 },
+  { top: '88%', left: '8%', size: 300, rotate: -6 },
+  { top: '96%', left: '48%', size: 360, rotate: 18 }
+]
 
 // Loading fallback component
 const SectionLoader = () => (
@@ -107,6 +119,23 @@ function App() {
 
   return (
     <div className="app">
+      <div className="site-watermarks" aria-hidden="true">
+        {SITE_WATERMARKS.map((mark, index) => (
+          <img
+            key={index}
+            src="/logo.png"
+            alt=""
+            className="site-watermark"
+            style={{
+              top: mark.top,
+              left: mark.left,
+              width: mark.size,
+              height: mark.size,
+              transform: `rotate(${mark.rotate}deg)`
+            }}
+          />
+        ))}
+      </div>
       <Header activeSection={activeSection} />
       <main>
         <section id="home">
@@ -129,6 +158,7 @@ function App() {
         </section>
       </main>
       <Footer />
+      <ScrollToTop />
     </div>
   )
 }

@@ -19,6 +19,8 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'contact', label: 'Contato' }
 ]
 
+const INSTAGRAM_URL = 'https://www.instagram.com/j3designer_/'
+
 const Header = ({ activeSection }: HeaderProps) => {
   const [isScrolled, setIsScrolled] = useState<boolean>(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false)
@@ -48,7 +50,7 @@ const Header = ({ activeSection }: HeaderProps) => {
             className="logo" 
             onClick={() => scrollToSection('home')}
           >
-            <img src="/logo.jpg" alt="J3Designer Logo" className="logo-image" />
+            <img src="/logo.png" alt="J3Designer Logo" className="logo-image" />
             <span className="logo-text">J3Designer</span>
           </div>
 
@@ -71,12 +73,24 @@ const Header = ({ activeSection }: HeaderProps) => {
             ))}
           </nav>
 
-          <button 
-            className="mobile-menu-btn" 
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? '✕' : '☰'}
-          </button>
+          <div className="header-actions">
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="header-social"
+              aria-label="Instagram"
+            >
+              <img src="/icons/instagram.png" alt="Instagram" className="header-social-icon" />
+            </a>
+
+            <button 
+              className="mobile-menu-btn" 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? '✕' : '☰'}
+            </button>
+          </div>
         </div>
       </header>
 

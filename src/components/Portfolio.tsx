@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { portfolioCategories, PortfolioCategory, PortfolioItem } from '../data/portfolio'
 import './Portfolio.css'
@@ -114,12 +115,11 @@ const Portfolio = () => {
 
   const navigateItem = (direction: 'next' | 'prev') => {
     if (!selectedCategory || !selectedItem) return
-    
+
     const currentIndex = selectedCategory.items.findIndex(item => item.id === selectedItem.id)
-    const newIndex = direction === 'next' 
-      ? (currentIndex + 1) % selectedCategory.items.length
-      : (currentIndex - 1 + selectedCategory.items.length) % selectedCategory.items.length
-    
+    const offset = direction === 'next' ? 1 : -1
+    const newIndex = (currentIndex + offset + selectedCategory.items.length) % selectedCategory.items.length
+
     setSelectedItem(selectedCategory.items[newIndex])
   }
 
@@ -130,11 +130,8 @@ const Portfolio = () => {
           <div className="header-content">
             <h2 className="section-title">
               <span className="title-main">Portfólio</span>
-              <span className="title-accent">Criativo</span>
             </h2>
-            <p className="section-subtitle">
-              Explore meus projetos em diferentes áreas do design e visualização 3D
-            </p>
+            <img src="/logo.png" alt="J3Designer" className="portfolio-title-logo" />
           </div>
         </div>
 
@@ -172,10 +169,6 @@ const Portfolio = () => {
               </div>
               
               <div className="card-content">
-                <div className="card-meta">
-                  <span className="card-year">{category.year}</span>
-                  <span className="card-count">{category.items.length} projetos</span>
-                </div>
                 <h3 className="card-title">{category.title}</h3>
                 <p className="card-description">{category.description}</p>
                 
@@ -212,7 +205,8 @@ const Portfolio = () => {
       </div>
 
       {/* Modal - keep AnimatePresence here, it's essential for smooth open/close */}
-      <AnimatePresence>
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
         {selectedItem && selectedCategory && (
           <motion.div 
             className="modal-overlay" 
@@ -258,58 +252,45 @@ const Portfolio = () => {
                     className="modal-image"
                   />
                 )}
-                
+
                 {selectedCategory.items.length > 1 && (
                   <>
-                    <button 
-                      className="modal-nav prev" 
+                    <button
+                      className="modal-nav prev"
                       onClick={() => navigateItem('prev')}
+                      aria-label="Imagem anterior"
                     >
-                      ←
+                      <img src="/icons/next.svg" alt="" className="modal-arrow-icon previous" />
                     </button>
-                    <button 
-                      className="modal-nav next" 
+                    <button
+                      className="modal-nav next"
                       onClick={() => navigateItem('next')}
+                      aria-label="Próxima imagem"
                     >
-                      →
+                      <img src="/icons/next.svg" alt="" className="modal-arrow-icon" />
                     </button>
                   </>
                 )}
-              </div>
-              
-              <div className="modal-info">
-                <span className="modal-category">{selectedCategory.title}</span>
-                <h3 className="modal-title">{selectedItem.title}</h3>
-                <p className="modal-description">
-                  {selectedItem.description.split('O que fiz:').map((part, index) => (
-                    index === 0 ? part : (
-                      <React.Fragment key={index}>
-                        <br /><br />
-                        O que fiz:{part}
-                      </React.Fragment>
-                    )
-                  ))}
-                </p>
                 
-                <div className="modal-thumbnails">
-                  {selectedCategory.items.map((item) => (
-                    <button
-                      key={item.id}
-                      className={`thumbnail ${selectedItem.id === item.id ? 'active' : ''}`}
-                      onClick={() => setSelectedItem(item)}
-                    >
-                      <img src={item.image} alt={item.title} />
-                      {item.isVideo && (
-                        <div className="video-play-icon">▶</div>
-                      )}
-                    </button>
-                  ))}
-                </div>
+                {selectedCategory.items.length > 1 && (
+                  <div className="modal-dots" aria-label="Imagens do projeto">
+                    {selectedCategory.items.map((item) => (
+                      <button
+                        key={item.id}
+                        className={`modal-dot ${selectedItem.id === item.id ? 'active' : ''}`}
+                        onClick={() => setSelectedItem(item)}
+                        aria-label={`Ver ${item.title}`}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body
+      )}
     </section>
   )
 }

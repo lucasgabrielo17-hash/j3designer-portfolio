@@ -1,6 +1,6 @@
 .portfolio {
   padding: 5rem 2rem;
-  background: var(--bg-darker);
+  background: transparent;
   position: relative;
 }
 
@@ -32,35 +32,20 @@
   line-height: 0.9;
 }
 
+.portfolio-title-logo {
+  display: block;
+  width: 48px;
+  height: 48px;
+  margin: 1rem auto 0;
+  object-fit: contain;
+}
+
 .title-main {
   background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   display: block;
-}
-
-.title-accent {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-size: 0.5em;
-  font-weight: 600;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  margin-top: -0.2em;
-  opacity: 0.9;
-  display: block;
-}
-
-.section-subtitle {
-  font-size: 1.1rem;
-  color: var(--text-secondary);
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: 1.8;
-  font-weight: 400;
 }
 
 .portfolio-grid {
@@ -101,7 +86,7 @@
 .card-image {
   position: absolute;
   top: 0;
-  left: 0;
+  left: 50%;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -287,8 +272,7 @@
   transition: all 0.3s ease;
 }
 
-.mini-item:hover .video-play-icon,
-.thumbnail:hover .video-play-icon {
+.mini-item:hover .video-play-icon {
   background: var(--primary-color);
   transform: translate(-50%, -50%) scale(1.1);
 }
@@ -306,15 +290,12 @@
 }
 
 .modal-content {
-  background: var(--bg-card);
-  border-radius: 20px;
-  max-width: 1200px;
-  max-height: 90vh;
-  width: 100%;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
   position: relative;
+  width: min(94vw, 1400px);
+  height: min(92vh, 900px);
+  background: var(--bg-darker);
+  border-radius: 20px;
+  overflow: hidden;
 }
 
 .modal-close {
@@ -323,10 +304,10 @@
   right: 1.5rem;
   width: 45px;
   height: 45px;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
+  background: rgba(168, 198, 108, 0.12);
+  border: 1px solid rgba(168, 198, 108, 0.45);
   border-radius: 50%;
-  color: var(--text-primary);
+  color: var(--primary-color);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -336,7 +317,9 @@
 }
 
 .modal-close:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--primary-color);
+  color: var(--bg-dark);
+  box-shadow: 0 0 24px rgba(168, 198, 108, 0.45);
   transform: scale(1.1) rotate(90deg);
 }
 
@@ -346,6 +329,8 @@
 
 .modal-image-container {
   position: relative;
+  width: 100%;
+  height: 100%;
   background: var(--bg-darker);
   display: flex;
   align-items: center;
@@ -357,7 +342,7 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  max-height: 90vh;
+  max-height: none;
 }
 
 .modal-video {
@@ -405,6 +390,44 @@
   backdrop-filter: blur(10px);
 }
 
+.modal-dots {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 50%;
+  z-index: 5;
+  display: flex;
+  box-sizing: border-box;
+  padding: 0.55rem 0.8rem;
+  gap: 0.5rem;
+  justify-content: center;
+  width: max-content;
+  min-width: 70px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.68);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.55);
+  transform: translateX(-50%);
+}
+
+.modal-dot {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  background: rgba(168, 198, 108, 0.6);
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.modal-dot.active,
+.modal-dot:hover {
+  background: var(--primary-color);
+  border-color: #ffffff;
+  transform: scale(1.25);
+}
+
 .modal-nav:hover {
   background: var(--primary-color);
   color: var(--bg-dark);
@@ -413,6 +436,16 @@
 
 .modal-nav:active {
   transform: translateY(-50%) scale(0.9);
+}
+
+.modal-arrow-icon {
+  width: 22px;
+  height: 22px;
+  filter: invert(1);
+}
+
+.modal-arrow-icon.previous {
+  transform: rotate(180deg);
 }
 
 .modal-nav.prev:hover {
@@ -431,84 +464,6 @@
   right: 1rem;
 }
 
-.modal-info {
-  padding: 3rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  overflow-y: auto;
-}
-
-.modal-category {
-  display: inline-block;
-  padding: 0.4rem 1rem;
-  background: rgba(168, 198, 108, 0.1);
-  border: 1px solid rgba(168, 198, 108, 0.3);
-  border-radius: 50px;
-  color: var(--primary-color);
-  font-size: 0.8rem;
-  font-weight: 500;
-  margin-bottom: 1rem;
-  align-self: flex-start;
-}
-
-.modal-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: var(--text-primary);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  letter-spacing: -0.02em;
-}
-
-.modal-description {
-  font-size: 1rem;
-  color: var(--text-secondary);
-  line-height: 1.7;
-  margin-bottom: 2rem;
-}
-
-.modal-thumbnails {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.thumbnail {
-  position: relative;
-  width: 70px;
-  height: 70px;
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
-  overflow: hidden;
-  cursor: pointer;
-  padding: 0;
-  background: none;
-  transition: all 0.3s ease;
-  opacity: 0.6;
-}
-
-.thumbnail:hover {
-  opacity: 1;
-  border-color: var(--text-secondary);
-  transform: scale(1.1) translateY(-5px);
-}
-
-.thumbnail:active {
-  transform: scale(0.95);
-}
-
-.thumbnail.active {
-  border-color: var(--primary-color);
-  opacity: 1;
-}
-
-.thumbnail img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 @media (max-width: 968px) {
   .portfolio {
     padding: 6rem 1.5rem;
@@ -518,26 +473,9 @@
     grid-template-columns: 1fr;
   }
 
-  .modal-content {
-    grid-template-columns: 1fr;
-    max-height: 95vh;
-  }
-
-  .modal-image-container {
-    aspect-ratio: 16/10;
-  }
-
-  .modal-info {
-    padding: 2rem;
-  }
-
   .modal-nav {
     width: 40px;
     height: 40px;
-  }
-
-  .modal-title {
-    font-size: 1.5rem;
   }
 }
 
@@ -562,16 +500,4 @@
     padding: 0.5rem;
   }
 
-  .modal-info {
-    padding: 1.5rem;
-  }
-
-  .modal-thumbnails {
-    gap: 0.5rem;
-  }
-
-  .thumbnail {
-    width: 50px;
-    height: 50px;
-  }
 }
