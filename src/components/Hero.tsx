@@ -34,14 +34,25 @@ const TriangleFrame = ({ src, alt }: { src: string; alt: string }) => (
 
 const Hero = () => {
   const [featuredIndex, setFeaturedIndex] = useState(0)
+  const [previousIndex, setPreviousIndex] = useState<number | null>(null)
 
   useEffect(() => {
     const interval = window.setInterval(() => {
-      setFeaturedIndex((currentIndex) => (currentIndex + 1) % FEATURED_IMAGES.length)
-    }, 5000)
+      setFeaturedIndex((currentIndex) => {
+        setPreviousIndex(currentIndex)
+        return (currentIndex + 1) % FEATURED_IMAGES.length
+      })
+    }, 6000)
 
     return () => window.clearInterval(interval)
   }, [])
+
+  // Preload the next image in the sequence to ensure instant, stutter-free fade in
+  useEffect(() => {
+    const nextIndex = (featuredIndex + 1) % FEATURED_IMAGES.length
+    const img = new Image()
+    img.src = FEATURED_IMAGES[nextIndex]
+  }, [featuredIndex])
 
   const scrollToPortfolio = () => {
     document.getElementById('portfolio')?.scrollIntoView({ behavior: 'smooth' })
@@ -63,8 +74,17 @@ const Hero = () => {
           </div>
 
           <div className="hero-featured">
+            {previousIndex !== null && previousIndex !== featuredIndex && (
+              <img
+                key={`prev-${FEATURED_IMAGES[previousIndex]}`}
+                src={FEATURED_IMAGES[previousIndex]}
+                alt=""
+                className="hero-featured-image-prev"
+                aria-hidden="true"
+              />
+            )}
             <img
-              key={FEATURED_IMAGES[featuredIndex]}
+              key={`curr-${FEATURED_IMAGES[featuredIndex]}`}
               src={FEATURED_IMAGES[featuredIndex]}
               alt="Projeto do portfólio J3Designer"
               className="hero-featured-image"
