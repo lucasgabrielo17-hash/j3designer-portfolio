@@ -35,23 +35,68 @@ const TriangleFrame = ({ src, alt }: { src: string; alt: string }) => (
 const Hero = () => {
   const [featuredIndex, setFeaturedIndex] = useState(0)
   const [previousIndex, setPreviousIndex] = useState<number | null>(null)
+  const [isInitial, setIsInitial] = useState(true)
 
+  // Preload and decode all featured images in the background sequentially on mount
   useEffect(() => {
-    const interval = window.setInterval(() => {
-      setFeaturedIndex((currentIndex) => {
-        setPreviousIndex(currentIndex)
-        return (currentIndex + 1) % FEATURED_IMAGES.length
-      })
-    }, 6000)
+    let isCancelled = false
 
-    return () => window.clearInterval(interval)
+    const preloadAll = async () => {
+      for (let i = 0; i < FEATURED_IMAGES.length; i++) {
+        if (isCancelled) break
+        const img = new Image()
+        img.src = FEATURED_IMAGES[i]
+        try {
+          if ('decode' in img) {
+            await img.decode()
+          }
+        } catch {
+          // Ignore decode errors and continue
+        }
+      }
+    }
+
+    preloadAll()
+
+    return () => {
+      isCancelled = true
+    }
   }, [])
 
-  // Preload the next image in the sequence to ensure instant, stutter-free fade in
+  // Transition to the next image only after it has been fully loaded and decoded in GPU memory
   useEffect(() => {
+    let isCancelled = false
+
+    // Immediately start loading and decoding the upcoming image
     const nextIndex = (featuredIndex + 1) % FEATURED_IMAGES.length
-    const img = new Image()
-    img.src = FEATURED_IMAGES[nextIndex]
+    const nextSrc = FEATURED_IMAGES[nextIndex]
+    const nextImg = new Image()
+    nextImg.src = nextSrc
+    if ('decode' in nextImg) {
+      nextImg.decode().catch(() => {})
+    }
+
+    const timer = window.setTimeout(async () => {
+      // Ensure upcoming image is decoded before triggering transition
+      try {
+        if ('decode' in nextImg) {
+          await nextImg.decode()
+        }
+      } catch {
+        // Continue if decode fails
+      }
+
+      if (isCancelled) return
+
+      setIsInitial(false)
+      setPreviousIndex(featuredIndex)
+      setFeaturedIndex(nextIndex)
+    }, 5500)
+
+    return () => {
+      isCancelled = true
+      window.clearTimeout(timer)
+    }
   }, [featuredIndex])
 
   const scrollToPortfolio = () => {
@@ -74,22 +119,27 @@ const Hero = () => {
           </div>
 
           <div className="hero-featured">
-            {previousIndex !== null && previousIndex !== featuredIndex && (
-              <img
-                key={`prev-${FEATURED_IMAGES[previousIndex]}`}
-                src={FEATURED_IMAGES[previousIndex]}
-                alt=""
-                className="hero-featured-image-prev"
-                aria-hidden="true"
-              />
-            )}
-            <img
-              key={`curr-${FEATURED_IMAGES[featuredIndex]}`}
-              src={FEATURED_IMAGES[featuredIndex]}
-              alt="Projeto do portfólio J3Designer"
-              className="hero-featured-image"
-              loading="eager"
-            />
+            {FEATURED_IMAGES.map((src, index) => {
+              const isActive = index === featuredIndex
+              const isPrevious = index === previousIndex
+              const isNext = index === (featuredIndex + 1) % FEATURED_IMAGES.length
+
+              // Only keep active, previous (solid behind), and next (pre-rendered) in DOM
+              if (!isActive && !isPrevious && !isNext) {
+                return null
+              }
+
+              return (
+                <img
+                  key={src}
+                  src={src}
+                  alt="Projeto do portfólio J3Designer"
+                  className={`hero-featured-image ${isActive ? 'active' : ''} ${isPrevious ? 'previous' : ''} ${isInitial && isActive ? 'initial-load' : ''}`}
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  decoding="async"
+                />
+              )
+            })}
           </div>
         </div>
 
