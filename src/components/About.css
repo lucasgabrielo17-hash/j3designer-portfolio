@@ -175,6 +175,22 @@
   color: #d0a9ed;
 }
 
+@media (max-width: 960px) {
+  .about-main {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .about-photo {
+    order: -1;
+  }
+
+  .about-photo img {
+    width: 220px;
+    height: 220px;
+  }
+}
+
 @media (max-width: 768px) {
   .about {
     padding: 3rem 1.25rem 4rem;
@@ -183,15 +199,6 @@
   .about-copy {
     font-size: 1rem;
     line-height: 1.55;
-  }
-
-  .about-main {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-  }
-
-  .about-photo {
-    order: -1;
   }
 
   .about-photo img {
@@ -206,5 +213,24 @@
   .tool-badge {
     width: 70px;
     height: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .skills-title {
+    font-size: 1.6rem;
+  }
+
+  .tool-badge {
+    width: 64px;
+    height: 64px;
+  }
+
+  .tool-mark {
+    font-size: 1.75rem;
+  }
+
+  .tool-max .tool-mark {
+    font-size: 2.35rem;
   }
 }

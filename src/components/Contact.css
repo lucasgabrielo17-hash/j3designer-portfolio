@@ -106,20 +106,35 @@
   color: #eeeeee;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .contact-container {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    max-width: 520px;
+    gap: 1.25rem;
   }
 }
 
 @media (max-width: 480px) {
   .contact {
-    min-height: calc(100vh - 310px);
-    padding: 1rem 1rem 4rem;
+    min-height: auto;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .contact-container {
+    max-width: 100%;
+    gap: 1rem;
   }
 
   .contact-card {
     min-height: 76px;
+    padding: 0.85rem 1rem;
+  }
+
+  .contact-value {
+    font-size: 1.05rem;
+  }
+
+  .contact-copy .contact-value {
+    font-size: 0.88rem;
   }
 }
